@@ -28,7 +28,7 @@ O convidado escolhe um item, informa o nome e um recado opcional e confirma a re
 
 **Reservar não significa pagar ou comprar.** O site orienta a combinar compra e entrega com o casal. Não há cobrança, Pix ou integração de pagamento configurada.
 
-Pratos e copos são inseridos uma única vez pela migração inicial. As ilustrações dos itens são feitas em CSS e não representam produtos de uma loja específica.
+Pratos e copos são inseridos uma única vez pela migração inicial. Os pratos e copos usam fotos dos anúncios Amazon B0B19274YZ e B0DJ6DRH9J, com descrições resumidas e links para consultar os produtos. As imagens estão em `images/`. Itens sem foto mantêm a ilustração de apoio em CSS.
 
 ### Cadastrar novos itens
 

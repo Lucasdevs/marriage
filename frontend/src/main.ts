@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit, inject, provideZonelessChangeDetection, signal } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-interface Gift { id:number; name:string; description:string; category:string; reserved:boolean }
+interface Gift { id:number; name:string; description:string; category:string; reserved:boolean; imageUrl?:string; productUrl?:string }
 @Component({selector:'app-root',standalone:true,imports:[FormsModule],templateUrl:'./app.html'})
 class App implements OnInit {
   private readonly changeDetector = inject(ChangeDetectorRef);

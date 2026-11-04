@@ -6,6 +6,8 @@ public class Gift {
  public String name;
  public String description;
  public String category;
+ @Column(name="image_url", length=500) public String imageUrl;
+ @Column(name="product_url", length=500) public String productUrl;
  public boolean reserved;
  @Column(name="guest_name") String guestName;
  String message;

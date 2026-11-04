@@ -10,7 +10,7 @@ import java.util.List;
 public class GiftController {
  private final GiftRepository repo;
  public GiftController(GiftRepository repo){this.repo=repo;}
- public record View(Long id,String name,String description,String category,boolean reserved){static View of(Gift g){return new View(g.id,g.name,g.description,g.category,g.reserved);}}
+ public record View(Long id,String name,String description,String category,boolean reserved,String imageUrl,String productUrl){static View of(Gift g){return new View(g.id,g.name,g.description,g.category,g.reserved,g.imageUrl,g.productUrl);}}
  public record Reservation(@NotBlank @Size(min=2,max=100) String guest,@Size(max=500) String message){}
  public record NewGift(@NotBlank @Size(max=120) String name,@NotBlank @Size(max=500) String description,@NotBlank @Size(max=80) String category){}
  @GetMapping public List<View> list(){return repo.findAll(org.springframework.data.domain.Sort.by("id")).stream().map(View::of).toList();}
