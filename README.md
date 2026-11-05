@@ -24,9 +24,13 @@ Os scripts usam Java, Maven e Node do PATH ou as ferramentas portáteis em `.too
 
 ## Presentes
 
-O convidado escolhe um item, informa o nome e um recado opcional e confirma a reserva. O item fica indisponível para outras pessoas, inclusive após reiniciar o servidor. A transação bloqueia reservas duplicadas. Nome e recado não aparecem na API pública.
+O convidado escolhe um item e abre o Pix com valor preenchido: copos por R$ 82,00 e pratos por R$ 110,00. O servidor obtém o preço do banco e gera um BR Code estático; o navegador desenha o QR Code localmente, sem serviço externo. Há também botão para copiar o código e campo selecionável caso a área de transferência não esteja disponível.
 
-**Reservar não significa pagar ou comprar.** O site orienta a combinar compra e entrega com o casal. Não há cobrança, Pix ou integração de pagamento configurada.
+**Gerar o Pix não confirma pagamento.** A transferência é um presente em dinheiro para o casal, não uma compra na Amazon. Não há integração bancária, webhook ou confirmação automática. O convidado deve enviar o comprovante aos noivos, que conferem o recebimento no banco. O item não é reservado ao abrir/copiar o Pix e pode receber mais de uma contribuição. As reservas antigas são preservadas; a API de reserva continua disponível para compatibilidade.
+
+Recebedor: Lucas Costa Teotônio, Esperança-PB. Chave: `lucascostateotonio@hotmail.com`. Configuração no backend por `PIX_KEY`, `PIX_NAME` e `PIX_CITY`, com os valores informados como padrão. Nome e cidade são normalizados sem acentos para o BR Code. O banco do pagador consulta o nome associado à chave; o site não verifica sua titularidade. A referência `PRESENTE{id}` identifica o item, não uma cobrança individual nem o pagador.
+
+Implementação baseada no [Manual de Padrões para Iniciação do Pix do Banco Central, versão 2.10.0](https://www.bcb.gov.br/content/estabilidadefinanceira/pix/Regulamento_Pix/II_ManualdePadroesparaIniciacaodoPix.pdf), incluindo CRC16-CCITT. O teste unitário compara o payload com o exemplo publicado pelo BCB.
 
 Pratos e copos são inseridos uma única vez pela migração inicial. Os pratos e copos usam fotos dos anúncios Amazon B0B19274YZ e B0DJ6DRH9J, com descrições resumidas e links para consultar os produtos. As imagens estão em `images/`. Itens sem foto mantêm a ilustração de apoio em CSS.
 
@@ -41,11 +45,13 @@ $credential = Get-Credential -UserName admin
 $csrf = Invoke-RestMethod http://127.0.0.1:8081/api/csrf -Credential $credential -SessionVariable weddingSession
 $headers = @{}
 $headers[$csrf.headerName] = $csrf.token
-$gift = @{ name = 'Jogo de talheres'; description = 'Para os nossos almoços em família.'; category = 'Mesa posta' } | ConvertTo-Json
+$gift = @{ name = 'Jogo de talheres'; description = 'Para os nossos almoços em família.'; category = 'Mesa posta'; price = 95.00 } | ConvertTo-Json
 Invoke-RestMethod http://127.0.0.1:8081/api/gifts -Method Post -Credential $credential -WebSession $weddingSession -Headers $headers -ContentType 'application/json; charset=utf-8' -Body ([System.Text.Encoding]::UTF8.GetBytes($gift))
 ```
 
 Atualize a página para ver o novo item. Nunca inclua a senha no código ou no Git.
+
+Para alterar um preço, envie `PATCH /api/gifts/{id}/price` com JSON `{"price":82.00}`, credenciais administrativas e o mesmo token CSRF. São aceitos somente valores positivos com até duas casas decimais. Itens sem preço exibem “Valor em breve” e não geram Pix. `GET /api/gifts/{id}/pix` retorna o valor e o payload sem cache; parâmetros enviados pelo visitante não alteram o preço.
 
 ## Personalizar
 

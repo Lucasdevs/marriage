@@ -11,5 +11,5 @@ import org.springframework.http.HttpMethod;
 public class Security {
  @Bean InMemoryUserDetailsManager users(@Value("${ADMIN_PASSWORD:}") String password){var manager=new InMemoryUserDetailsManager();if(!password.isBlank())manager.createUser(User.withUsername("admin").password(new BCryptPasswordEncoder().encode(password)).roles("ADMIN").build());return manager;}
  @Bean BCryptPasswordEncoder encoder(){return new BCryptPasswordEncoder();}
- @Bean SecurityFilterChain chain(HttpSecurity http)throws Exception{return http.csrf(c->c.ignoringRequestMatchers("/api/gifts/*/reserve")).authorizeHttpRequests(a->a.requestMatchers(HttpMethod.GET,"/api/gifts").permitAll().requestMatchers(HttpMethod.POST,"/api/gifts/*/reserve").permitAll().requestMatchers("/api/csrf","/api/gifts").hasRole("ADMIN").anyRequest().denyAll()).httpBasic(b->{}).build();}
+ @Bean SecurityFilterChain chain(HttpSecurity http)throws Exception{return http.csrf(c->c.ignoringRequestMatchers("/api/gifts/*/reserve")).authorizeHttpRequests(a->a.requestMatchers(HttpMethod.GET,"/api/gifts","/api/gifts/*/pix").permitAll().requestMatchers(HttpMethod.POST,"/api/gifts/*/reserve").permitAll().requestMatchers("/api/csrf","/api/gifts","/api/gifts/*/price").hasRole("ADMIN").anyRequest().denyAll()).httpBasic(b->{}).build();}
 }
